@@ -59,6 +59,10 @@ async function init() {
   // programs so the first time we collect data from the webcam it will be
   // quick.
   // tf.tidy(() => truncatedMobileNet.predict(webcam.capture()));
+  window.onload = function(){
+      typeWriter();// code goes here
+  };
+
 
   document.getElementById("capture").addEventListener("click", () => {
     let img = webcam.capture();
@@ -74,6 +78,21 @@ async function init() {
     controllerDataset.predict(img);
   })
 }
+
+
+// type writer effect
+var i = 0;
+var speed = 50;
+var txt = "This is a scenario. You have been presented with an [a]pple, [b]annana, and a [c]herry. Which do you choose?"
+
+function typeWriter() {
+  if (i < txt.length) {
+    document.getElementById("scenario").innerHTML += txt.charAt(i);
+    i++;
+    setTimeout(typeWriter, speed);
+  }
+}
+
 
 // Initialize the application.
 init();
