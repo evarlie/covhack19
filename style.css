@@ -22,6 +22,12 @@ body {
     display: block;
     margin: 0 auto;
     border-radius: 3px;
+
+/* flip video so that it mirrors user*/
+    transform: rotateY(180deg);
+    -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+    -moz-transform:rotateY(180deg); /* Firefox */
+
 }
 
 #image-container {
@@ -43,11 +49,9 @@ body {
 }
 
 #input-container {
-    height: 40px; 
-    position: fixed; 
+    height: 40px;
+    position: fixed;
     bottom:0%;
-    width:100%; 
+    width:100%;
     font-size: 30px;
 }
-
-
