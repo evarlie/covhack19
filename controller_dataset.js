@@ -15,14 +15,36 @@
  * =============================================================================
  */
 import * as tf from '@tensorflow/tfjs';
+let truncatedMobileNet;
+let model;
+// const truncatedMobileNet = await loadTruncatedMobileNet();
+loadTruncatedMobileNet().then((result) => {
+  truncatedMobileNet =  result;
+});
+// tf.tidy(() => truncatedMobileNet.predict(webcam.capture()));
+
+
 
 /**
  * A dataset for webcam controls which allows the user to add example Tensors
  * for particular labels. This object will concat them into two large xs and ys.
  */
+
+async function loadTruncatedMobileNet() {
+   const mobilenet = await tf.loadLayersModel(
+       'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json');
+
+   // Return a model that outputs an internal activation.
+   const layer = mobilenet.getLayer('conv_pw_13_relu');
+   return tf.model({inputs: mobilenet.inputs, outputs: layer.output});
+ }
+
+
+
 export class ControllerDataset {
   constructor(numClasses) {
     this.numClasses = numClasses;
+
   }
 
   /**
@@ -31,7 +53,10 @@ export class ControllerDataset {
    *     an activation, or any other type of Tensor.
    * @param {number} label The label of the example. Should be a number.
    */
-  addExample(example, label) {
+  async addExample(img, label) {
+    // console.log(truncatedMobileNet)
+    let example =  truncatedMobileNet.predict(img);
+
     // One-hot encode the label.
     const y = tf.tidy(
       () => tf.oneHot(tf.tensor1d([label]).toInt(), this.numClasses));
@@ -55,6 +80,7 @@ export class ControllerDataset {
       y.dispose();
     }
   }
+
   async train() {
     if (this.xs == null) {
       throw new Error('Add some examples before training!');
@@ -105,14 +131,14 @@ export class ControllerDataset {
     // number of examples that are collected depends on how many examples the user
     // collects. This allows us to have a flexible batch size.
     const batchSize =
-      Math.floor(controllerDataset.xs.shape[0] * batchSize);
+      Math.floor(this.xs.shape[0] * batchSize);
     if (!(batchSize > 0)) {
       throw new Error(
         `Batch size is 0 or NaN. Please choose a non-zero fraction.`);
     }
 
     // Train the model! Model.fit() will shuffle xs & ys so we don't have to.
-    model.fit(controllerDataset.xs, controllerDataset.ys, {
+    model.fit(this.xs, this.ys, {
       batchSize,
       epochs: epochs,
       callbacks: {
@@ -124,23 +150,25 @@ export class ControllerDataset {
   }
 
   async predict(img) {
+    // let img = truncatedMobileNet.predict(img)
     const predictedClass = tf.tidy(() => {
-      // Make a prediction through mobilenet, getting the internal activation of 
-      // the mobilenet model, i.e., "embeddings" of the input images. 
+      // Make a prediction through mobilenet, getting the internal activation of
+      // the mobilenet model, i.e., "embeddings" of the input images.
       const embeddings = truncatedMobileNet.predict(img);
 
-      // Make a prediction through our newly-trained model using the embeddings 
-      // from mobilenet as input. 
+      // Make a prediction through our newly-trained model using the embeddings
+      // from mobilenet as input.
       const predictions = model.predict(embeddings);
 
-      // Returns the index with the maximum probability. This number corresponds 
-      // to the class the model thinks is the most probable given the input. 
+      // Returns the index with the maximum probability. This number corresponds
+      // to the class the model thinks is the most probable given the input.
       return predictions.as1D().argMax();
     });
 
     const classId = (await predictedClass.data())[0];
     predictedClass.dispose();
 
+    console.log(classId)
     return classId;
   }
 }

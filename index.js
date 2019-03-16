@@ -32,15 +32,15 @@ const webcam = new Webcam(document.getElementById('webcam'));
 // The dataset object where we will store activations.
 const controllerDataset = new ControllerDataset(NUM_CLASSES);
 
-
-async function loadTruncatedMobileNet() {
-  const mobilenet = await tf.loadLayersModel(
-      'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json');
-
-  // Return a model that outputs an internal activation.
-  const layer = mobilenet.getLayer('conv_pw_13_relu');
-  return tf.model({inputs: mobilenet.inputs, outputs: layer.output});
-}
+// now in controller_dataset.js
+// async function loadTruncatedMobileNet() {
+//   const mobilenet = await tf.loadLayersModel(
+//       'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json');
+//
+//   // Return a model that outputs an internal activation.
+//   const layer = mobilenet.getLayer('conv_pw_13_relu');
+//   return tf.model({inputs: mobilenet.inputs, outputs: layer.output});
+// }
 
 
 
@@ -52,16 +52,17 @@ async function init() {
     document.getElementById('no-webcam').style.display = 'block';
   }
 
-  const truncatedMobileNet = await loadTruncatedMobileNet();
+// now in controller_dataset.js
+  // const truncatedMobileNet = await loadTruncatedMobileNet();
 
   // Warm up the model. This uploads weights to the GPU and compiles the WebGL
   // programs so the first time we collect data from the webcam it will be
   // quick.
-  tf.tidy(() => truncatedMobileNet.predict(webcam.capture()));
+  // tf.tidy(() => truncatedMobileNet.predict(webcam.capture()));
 
   document.getElementById("capture").addEventListener("click", () => {
     let img = webcam.capture();
-    controllerDataset.addExample(truncatedMobileNet.predict(img), 0);
+    controllerDataset.addExample(img, 0);
   })
 
   document.getElementById("train").addEventListener("click", () => {
@@ -70,7 +71,7 @@ async function init() {
 
   document.getElementById("predict").addEventListener("click", () => {
     let img = webcam.capture();
-    controllerDataset.predict(truncatedMobileNet.predict(img));
+    controllerDataset.predict(img);
   })
 }
 
