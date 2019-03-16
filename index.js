@@ -18,31 +18,15 @@
 import 'babel-polyfill';
 import * as tf from '@tensorflow/tfjs';
 
-import {ControllerDataset} from './controller_dataset';
-import {Webcam} from './webcam';
+import { ControllerDataset } from './controller_dataset';
+import { Webcam } from './webcam';
 
 // The number of classes we want to predict. In this example, we will be
 // predicting 4 classes for up, down, left, and right.
-const NUM_CLASSES = 4;
+const NUM_CLASSES = 3;
 
 // A webcam class that generates Tensors from the images from the webcam.
 const webcam = new Webcam(document.getElementById('webcam'));
-
-
-// The dataset object where we will store activations.
-const controllerDataset = new ControllerDataset(NUM_CLASSES);
-
-// now in controller_dataset.js
-// async function loadTruncatedMobileNet() {
-//   const mobilenet = await tf.loadLayersModel(
-//       'https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json');
-//
-//   // Return a model that outputs an internal activation.
-//   const layer = mobilenet.getLayer('conv_pw_13_relu');
-//   return tf.model({inputs: mobilenet.inputs, outputs: layer.output});
-// }
-
-
 
 
 async function init() {
@@ -51,29 +35,42 @@ async function init() {
   } catch (e) {
     document.getElementById('no-webcam').style.display = 'block';
   }
-
-// now in controller_dataset.js
-  // const truncatedMobileNet = await loadTruncatedMobileNet();
-
-  // Warm up the model. This uploads weights to the GPU and compiles the WebGL
-  // programs so the first time we collect data from the webcam it will be
-  // quick.
-  // tf.tidy(() => truncatedMobileNet.predict(webcam.capture()));
-
-  document.getElementById("capture").addEventListener("click", () => {
-    let img = webcam.capture();
-    controllerDataset.addExample(img, 0);
-  })
-
-  document.getElementById("train").addEventListener("click", () => {
-    controllerDataset.train();
-  })
-
-  document.getElementById("predict").addEventListener("click", () => {
-    let img = webcam.capture();
-    controllerDataset.predict(img);
-  })
 }
+
+
+function loop() {
+
+
+  while (true) {
+    // The dataset object where we will store activations.
+    let controllerDataset = new ControllerDataset(NUM_CLASSES);
+
+    // Fetch data from python app
+    let data = { "Scenario": "This is a test", "Options": { "a": "apple", "b": "banana", "c": "cherry" } }
+
+    // For each option
+    Object.keys(data.Options).forEach( (key) => {
+
+      document.getElementById("image").src = `images/${key}.png`
+
+      for (let x=1; x<30; x++) {
+        controllerDataset.addExample(webcam.capture(), 0)
+      }
+
+    })
+    break;
+    // Display image, and train
+
+    // Use the data to populate text on the screen
+
+    // User completes scenario
+  }
+}
+
+
+document.getElementById("start").addEventListener("click", () => {
+  loop();
+})
 
 // Initialize the application.
 init();
