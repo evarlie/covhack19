@@ -15,13 +15,17 @@
  * =============================================================================
  */
 import * as tf from '@tensorflow/tfjs';
+import {Webcam} from './webcam';
+
 let truncatedMobileNet;
 let model;
 // const truncatedMobileNet = await loadTruncatedMobileNet();
 loadTruncatedMobileNet().then((result) => {
   truncatedMobileNet =  result;
+
+  let webcam = new Webcam(document.getElementById('webcam'));
+  tf.tidy(() => truncatedMobileNet.predict(webcam.capture()));
 });
-// tf.tidy(() => truncatedMobileNet.predict(webcam.capture()));
 
 
 
