@@ -38,33 +38,74 @@ async function init() {
 }
 
 
-function loop() {
+// function loop() {
+//
+//
+//   while (true) {
+//     // The dataset object where we will store activations.
+//     let controllerDataset = new ControllerDataset(NUM_CLASSES);
+//
+//     // Fetch data from python app
+//     let data = { "Scenario": "This is a test", "Options": { "a": "apple", "b": "banana", "c": "cherry" } }
+//
+//     // For each option
+//
+//
+//       document.getElementById("image").src = `images/${key}.png`
+//
+//       for (let x=1; x<30; x++) {
+//         controllerDataset.addExample(webcam.capture(), 0)
+//       }
+//
+//     })
+//     break;
+//     // Display image, and train
+//
+//     // Use the data to populate text on the screen
+//
+//     // User completes scenario
+//   }
+// }
+
+function loop(){
+  let controllerDataset = new ControllerDataset(NUM_CLASSES);
+
+  // Fetch data from python app below is test case
+  let data = { "Scenario": "This is a test", "Options": { "a": "apple", "b": "banana", "c": "cherry" } }
+
+  var label = 0;
+  var key = Object.keys(data.Options)[label];
+  console.log(key)
+  document.getElementById("image").src = `images/${key}.png`
 
 
-  while (true) {
-    // The dataset object where we will store activations.
-    let controllerDataset = new ControllerDataset(NUM_CLASSES);
+  document.getElementById("train").addEventListener("click", () => {
+    console.log("training ...")
+    for (let x=1; x<30; x++) {
+      controllerDataset.addExample(webcam.capture(), label)
+      console.log(`training on label ${label}`)
+    }
 
-    // Fetch data from python app
-    let data = { "Scenario": "This is a test", "Options": { "a": "apple", "b": "banana", "c": "cherry" } }
+  })
 
-    // For each option
-    Object.keys(data.Options).forEach( (key) => {
+  document.getElementById("next").addEventListener("click", () => {
+    console.log("moving on to next image ...")
 
-      document.getElementById("image").src = `images/${key}.png`
+    label++;
+    var key = Object.keys(data.Options)[label];
+    document.getElementById("image").src = `images/${key}.png`;
 
-      for (let x=1; x<30; x++) {
-        controllerDataset.addExample(webcam.capture(), 0)
-      }
 
-    })
-    break;
-    // Display image, and train
+  })
 
-    // Use the data to populate text on the screen
-
-    // User completes scenario
+  document.getElementById("story").addEventListener("click", () => {
+    if(label==2){
+    console.log("starting story ...")
   }
+
+  })
+
+
 }
 
 
