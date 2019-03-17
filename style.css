@@ -10,6 +10,7 @@ body {
     font-family: 'Share Tech Mono', monospace;
     color: #fff;
     text-shadow: 1px -1px 0.5vw #eee, 1px -1px 0.5vh #eee;
+    background-color: #836953;
 }
 
 #image {
@@ -43,11 +44,16 @@ body {
 }
 
 #input-container {
-    height: 40px; 
-    position: fixed; 
+    height: 40px;
+    position: fixed;
     bottom:0%;
-    width:100%; 
+    width:100%;
     font-size: 30px;
 }
 
-
+.ball {
+  position: absolute;
+  border-radius: 100%;
+  opacity: 0.7;
+  z-index: -1;
+}
