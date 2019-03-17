@@ -75,7 +75,14 @@ function loop(){
 
   // Fetch data from python app below is test case
   //let data = { "Scenario": "This is a test", "Options": { "a": "apple", "b": "banana", "c": "cherry" } }
-	let data = read('http://127.0.0.1:5000/options');
+
+// will be un commented in future
+  // let data = read();
+  // console.log(read())
+
+
+  // let data = { "Scenario": "This is a test", "Options": { "e": "apple", "f": "banana", "g": "cherry" } }
+  let data = {"Scenario":"An evil dragon stands in your way. What will you offer it: A Sausage, a Bucket or a Joke?", "Options": {"s":"Sausage","b":"Bucket","j":"Joke"}};
 
   var label = 0;
   var key = Object.keys(data.Options)[label];
@@ -114,6 +121,7 @@ function loop(){
 
     label++;
     var key = Object.keys(data.Options)[label];
+    console.log(key)
     document.getElementById("image").src = `http://172.21.235.121:8080/${key}.png`;
 
 
@@ -151,7 +159,7 @@ function loop(){
       let img = webcam.capture();
       var a;
       controllerDataset.predict(img).then(function(result) {
-        document.getElementById("choice").innerText = data.Options[Object.keys(data.Options)[0]];
+      document.getElementById("choice").innerText = data.Options[Object.keys(data.Options)[result]];
 });
 
     })
