@@ -20,3 +20,13 @@ Foremost we all learned a great deal about ASL, its uses and the impact it can h
 
 # What's next for "Teaching ASL using Transfer Learning"
 Although we initially used the alphabet as a means of communication, in future we would plan on integrating signs representing whole words and continuously updating our library of signs so eventually anyone can pick up our game and better communicate with those with disabling hearing loss.
+
+# Building
+
+```shell
+git clone https://github.com/upcharlie/covhack19.git
+cd covhack19
+npm install
+pip install -r requirements.txt
+npm run start
+```
