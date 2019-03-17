@@ -67,6 +67,9 @@ async function init() {
 //   }
 // }
 
+// type writer effect
+
+
 function loop(){
   let controllerDataset = new ControllerDataset(NUM_CLASSES);
 
@@ -100,13 +103,55 @@ function loop(){
 
   document.getElementById("story").addEventListener("click", () => {
     if(label==2){
-    console.log("starting story ...")
-  }
+    console.log("training network")
 
-  })
+
+
+    console.log("starting story ...")
+
+    var i = 0;
+    var speed = 50;
+    var txt = data.Scenario
+
+    function typeWriter() {
+      if (i < txt.length) {
+        document.getElementById("scenario").innerHTML += txt.charAt(i);
+        i++;
+        setTimeout(typeWriter, speed);
+      }
+    }
+    typeWriter();
+
+
+// can't figure out why it's predicitng before training
+
+    function predictLots(){
+    console.log("predicting now");
+    var i;
+    for(i=0;i<100;i++){
+    let img = webcam.capture();
+    console.log(controllerDataset.predict);
+    }
+    }
+
+    controllerDataset.train().then(function(){
+      predictLots();
+    })
+
+    predictLots();
+
+    // controllerDataset.train().then(predictLots())
+
+
 
 
 }
+
+  })
+}
+
+
+
 
 
 document.getElementById("start").addEventListener("click", () => {
