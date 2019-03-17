@@ -85,10 +85,10 @@ function loop(){
 //  hacky-no-for-loop
   document.getElementById("image").src = `http://172.21.235.121:8080/${key}.png`
  // document.getElementById("image").src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgiajp3QubOG7VD3CUkagxBEe3zwSXzqUscCmPZfGw4Bw4LItT'
-// 
-    
-    
-    
+//
+
+
+
   // Warm up the model. This uploads weights to the GPU and compiles the WebGL
   // programs so the first time we collect data from the webcam it will be
   // quick.
@@ -231,7 +231,7 @@ document.getElementById("start").addEventListener("click", () => {
 
 
 
-  
+
 // type writer effect
 var i = 0;
 var speed = 50;
