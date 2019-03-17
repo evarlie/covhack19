@@ -81,8 +81,22 @@ function loop(){
   console.log(key)
   // console.log(data.Options[Object.keys(data.Options)[0]])
 
+//  hacky-no-for-loop
   document.getElementById("image").src = `http://172.21.235.121:8080/${key}.png`
  // document.getElementById("image").src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgiajp3QubOG7VD3CUkagxBEe3zwSXzqUscCmPZfGw4Bw4LItT'
+// 
+    
+    
+    
+  // Warm up the model. This uploads weights to the GPU and compiles the WebGL
+  // programs so the first time we collect data from the webcam it will be
+  // quick.
+  // tf.tidy(() => truncatedMobileNet.predict(webcam.capture()));
+  window.onload = function(){
+      typeWriter();// code goes here
+  };
+
+//  master
 
 
   document.getElementById("train").addEventListener("click", () => {
@@ -177,6 +191,7 @@ for (let i = 0; i < numBalls; i++) {
   document.body.append(ball);
 }
 
+// <<<<<<< hacky-no-for-loop
 // Keyframes
 balls.forEach((el, i, ra) => {
   let to = {
@@ -213,5 +228,23 @@ document.getElementById("start").addEventListener("click", () => {
   loop();
 })
 
+
+
+  
+// type writer effect
+var i = 0;
+var speed = 50;
+var txt = "This is a scenario. You have been presented with an [a]pple, [b]annana, and a [c]herry. Which do you choose?"
+
+function typeWriter() {
+  if (i < txt.length) {
+    document.getElementById("scenario").innerHTML += txt.charAt(i);
+    i++;
+    setTimeout(typeWriter, speed);
+  }
+}
+
+
+// master
 // Initialize the application.
 init();
