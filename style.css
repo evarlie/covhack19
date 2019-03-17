@@ -40,7 +40,6 @@ body {
     display: inline-block;
     width: 49%;
     align-content: center;
-    margin-top: 30vh;
     border-radius: 3px;
 }
 
@@ -55,6 +54,10 @@ body {
     bottom:0%;
     width:100%;
     font-size: 30px;
+}
+
+#letter {
+    height: 10vh;
 }
 
 .ball {
