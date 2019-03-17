@@ -113,22 +113,19 @@ async function loop(data) {
       console.log(`training on label ${label}`)
     }
 
-  })
-
-  document.getElementById("next").addEventListener("click", () => {
     console.log("moving on to next image ...")
 
-    label++;
-    var key = Object.keys(data.Options)[label];
-    console.log(key)
-    document.getElementById("image").src = `http://127.0.0.1:5000/images/${key}.png`
-    document.getElementById("letter").innerHTML = key;
-  })
+    if (label < 2) {
+      label++;
+      var key = Object.keys(data.Options)[label];
+      console.log(key)
+      document.getElementById("image").src = `http://127.0.0.1:5000/images/${key}.png`
+      document.getElementById("letter").innerHTML = key;
+      return;
+    }
 
-  document.getElementById("story").addEventListener("click", () => {
     if (label == 2) {
       console.log("training network")
-
 
       console.log("starting story ...")
 
@@ -149,18 +146,24 @@ async function loop(data) {
       // can't figure out why it's predicitng before training
       controllerDataset.train()
 
+      function submit() {
+        let img = webcam.capture();
+        controllerDataset.predict(img).then(function (result) {
+          let key = Object.keys(data.Options)[result];
+          document.getElementById("image").src = `http://127.0.0.1:5000/images/${key}.png`
+          document.getElementById("letter").innerHTML = key;
+          document.getElementById("choice").innerText = data.Options[key];
+        });
+      }
 
+      setInterval(() => {
+        submit()
+      }, 500)
+
+      document.getElementById("submit").addEventListener("click", () => {
+        submit();
+      })
     }
-
-    document.getElementById("submit").addEventListener("click", () => {
-      let img = webcam.capture();
-      var a;
-      controllerDataset.predict(img).then(function (result) {
-        document.getElementById("choice").innerText = data.Options[Object.keys(data.Options)[result]];
-      });
-
-    })
-
   })
 }
 
