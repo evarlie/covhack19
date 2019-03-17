@@ -91,6 +91,7 @@ function loop(){
 
 //  hacky-no-for-loop
   document.getElementById("image").src = `http://172.21.235.121:8080/${key}.png`
+  document.getElementById("letter").innerHTML = key;
  // document.getElementById("image").src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgiajp3QubOG7VD3CUkagxBEe3zwSXzqUscCmPZfGw4Bw4LItT'
 //
 
@@ -123,6 +124,7 @@ function loop(){
     var key = Object.keys(data.Options)[label];
     console.log(key)
     document.getElementById("image").src = `http://172.21.235.121:8080/${key}.png`;
+    document.getElementById("letter").innerHTML = key;
 
 
   })
