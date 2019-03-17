@@ -1,3 +1,4 @@
+import os
 from flask import *
 from options import *
 from flask_cors import CORS
@@ -23,7 +24,6 @@ def optionSelect():
 	scenario = random.choice(scenarios)
 	visitedList.append(scenario["Options"])
 	testList.append(scenario["Options"])
-	scenarios.remove(scenario)
 	return json.dumps(scenario)
 	
 @app.route('/intro', methods=['POST', 'GET'])
@@ -47,6 +47,11 @@ def performanceIncrement():
 def aftertest():
 	testCount = testCount + 1
 	return json.dumps(testList[testCount])
+
+@app.route('/images/<path:path>')
+def serve_images(path):
+	path = os.path.basename(path)
+	return send_from_directory('images', path)
 
 if __name__ == "__main__":
     app.run(debug=True)
