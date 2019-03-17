@@ -74,7 +74,8 @@ function loop(){
   let controllerDataset = new ControllerDataset(NUM_CLASSES);
 
   // Fetch data from python app below is test case
-  let data = { "Scenario": "This is a test", "Options": { "a": "apple", "b": "banana", "c": "cherry" } }
+  //let data = { "Scenario": "This is a test", "Options": { "a": "apple", "b": "banana", "c": "cherry" } }
+	let data = read();
 
   var label = 0;
   var key = Object.keys(data.Options)[label];
@@ -244,6 +245,20 @@ function typeWriter() {
   }
 }
 
+function read() {
+	$.ajax({
+            url: 'http://127.0.0.1:5000/options ',
+            data: $('form').serialize(),
+            type: 'POST',
+            success: function(response) {
+                var current =  JSON.parse(response);
+		console.log(current);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
+}
 
 // master
 // Initialize the application.
