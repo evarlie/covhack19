@@ -79,7 +79,10 @@ function loop(){
   var label = 0;
   var key = Object.keys(data.Options)[label];
   console.log(key)
+  // console.log(data.Options[Object.keys(data.Options)[0]])
+
   document.getElementById("image").src = `images/${key}.png`
+// document.getElementById("image").src = `../images/${key}.png`
 
 
   document.getElementById("train").addEventListener("click", () => {
@@ -124,21 +127,22 @@ function loop(){
 
 
 // can't figure out why it's predicitng before training
+    controllerDataset.train()
 
-    function predictLots(){
-    console.log("predicting now");
-    var i;
-    for(i=0;i<100;i++){
-    let img = webcam.capture();
-    console.log(controllerDataset.predict);
-    }
+
     }
 
-    controllerDataset.train().then(function(){
-      predictLots();
+    document.getElementById("submit").addEventListener("click", () => {
+      let img = webcam.capture();
+      var a;
+      controllerDataset.predict(img).then(function(result) {
+        document.getElementById("choice").innerText = data.Options[Object.keys(data.Options)[0]];
+});
+
     })
 
-    predictLots();
+
+
 
     // controllerDataset.train().then(predictLots())
 
@@ -147,7 +151,7 @@ function loop(){
 
 }
 
-  })
+  )
 }
 
 
