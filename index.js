@@ -70,39 +70,45 @@ async function init() {
 // type writer effect
 
 
-function loop(){
+async function loop(data) {
   let controllerDataset = new ControllerDataset(NUM_CLASSES);
 
   // Fetch data from python app below is test case
   //let data = { "Scenario": "This is a test", "Options": { "a": "apple", "b": "banana", "c": "cherry" } }
-	let data = read('http://127.0.0.1:5000/options');
+
+  // will be un commented in future
+  // let data = read();
+  // console.log(read())
+
+
+  // let data = { "Scenario": "This is a test", "Options": { "e": "apple", "f": "banana", "g": "cherry" } }
+  // let data = { "Scenario": "An evil dragon stands in your way. What will you offer it: A Sausage, a Bucket or a Joke?", "Options": { "s": "Sausage", "b": "Bucket", "j": "Joke" } };
+
+  console.log(data)
 
   var label = 0;
   var key = Object.keys(data.Options)[label];
   console.log(key)
   // console.log(data.Options[Object.keys(data.Options)[0]])
 
-//  hacky-no-for-loop
-  document.getElementById("image").src = `http://172.21.235.121:8080/${key}.png`
- // document.getElementById("image").src = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgiajp3QubOG7VD3CUkagxBEe3zwSXzqUscCmPZfGw4Bw4LItT'
-// 
-    
-    
-    
+  document.getElementById("image").src = `http://127.0.0.1:5000/images/${key}.png`
+  document.getElementById("letter").innerHTML = key;
+
+
   // Warm up the model. This uploads weights to the GPU and compiles the WebGL
   // programs so the first time we collect data from the webcam it will be
   // quick.
   // tf.tidy(() => truncatedMobileNet.predict(webcam.capture()));
-  window.onload = function(){
-      typeWriter();// code goes here
+  window.onload = function () {
+    typeWriter();// code goes here
   };
 
-//  master
+  //  master
 
 
   document.getElementById("train").addEventListener("click", () => {
     console.log("training ...")
-    for (let x=1; x<30; x++) {
+    for (let x = 1; x < 30; x++) {
       controllerDataset.addExample(webcam.capture(), label)
       console.log(`training on label ${label}`)
     }
@@ -114,35 +120,34 @@ function loop(){
 
     label++;
     var key = Object.keys(data.Options)[label];
-    document.getElementById("image").src = `http://172.21.235.121:8080/${key}.png`;
-
-
+    console.log(key)
+    document.getElementById("image").src = `http://127.0.0.1:5000/images/${key}.png`
+    document.getElementById("letter").innerHTML = key;
   })
 
   document.getElementById("story").addEventListener("click", () => {
-    if(label==2){
-    console.log("training network")
+    if (label == 2) {
+      console.log("training network")
 
 
+      console.log("starting story ...")
 
-    console.log("starting story ...")
+      var i = 0;
+      var speed = 50;
+      var txt = data.Scenario
 
-    var i = 0;
-    var speed = 50;
-    var txt = data.Scenario
-
-    function typeWriter() {
-      if (i < txt.length) {
-        document.getElementById("scenario").innerHTML += txt.charAt(i);
-        i++;
-        setTimeout(typeWriter, speed);
+      function typeWriter() {
+        if (i < txt.length) {
+          document.getElementById("scenario").innerHTML += txt.charAt(i);
+          i++;
+          setTimeout(typeWriter, speed);
+        }
       }
-    }
-    typeWriter();
+      typeWriter();
 
 
-// can't figure out why it's predicitng before training
-    controllerDataset.train()
+      // can't figure out why it's predicitng before training
+      controllerDataset.train()
 
 
     }
@@ -150,30 +155,20 @@ function loop(){
     document.getElementById("submit").addEventListener("click", () => {
       let img = webcam.capture();
       var a;
-      controllerDataset.predict(img).then(function(result) {
-        document.getElementById("choice").innerText = data.Options[Object.keys(data.Options)[0]];
-});
+      controllerDataset.predict(img).then(function (result) {
+        document.getElementById("choice").innerText = data.Options[Object.keys(data.Options)[result]];
+      });
 
     })
 
-
-
-
-    // controllerDataset.train().then(predictLots())
-
-
-
-
-}
-
-  )
+  })
 }
 
 // background experimental
 
 // Some random colors
 // const colors = ["#3CC157", "#2AA7FF", "#1B1B1B", "#FCBC0F", "#F85F36"];
-const colors = ["#1B1B1B","#F4F1D6"];
+const colors = ["#1B1B1B", "#F4F1D6"];
 
 const numBalls = 50;
 const balls = [];
@@ -196,8 +191,8 @@ for (let i = 0; i < numBalls; i++) {
 // Keyframes
 balls.forEach((el, i, ra) => {
   let to = {
-    x: Math.random() * (i % 2 === 0 ? -11 : 11)/10,
-    y: Math.random() * 12/10
+    x: Math.random() * (i % 2 === 0 ? -11 : 11) / 10,
+    y: Math.random() * 12 / 10
   };
 
   let anim = el.animate(
@@ -216,22 +211,22 @@ balls.forEach((el, i, ra) => {
 });
 
 
-
-
-
-//
-
-
-
-
-
 document.getElementById("start").addEventListener("click", () => {
-  loop();
+  fetchData();
 })
 
 
+function fetchData() {
+  fetch("http://127.0.0.1:5000/options").then((response) => {
+    return response.json()
+  })
+  .then((data) => {
+    loop(data);
+  })
+}
 
-  
+
+
 // type writer effect
 var i = 0;
 var speed = 50;
@@ -245,19 +240,20 @@ function typeWriter() {
   }
 }
 
-function read(pyURL) {
-	$.ajax({
-            url: pyURL,
-            data: $('form').serialize(),
-            type: 'POST',
-            success: function(response) {
-                var current =  JSON.parse(response);
-		console.log(current);
-            },
-            error: function(error) {
-                console.log(error);
-            }
-        });
+function read() {
+  $.ajax({
+    url: 'http://127.0.0.1:5000/options ',
+    data: $('form').serialize(),
+    type: 'POST',
+    success: function (response) {
+      var current = JSON.parse(response);
+      console.log(current);
+      return current
+    },
+    error: function (error) {
+      console.log(error);
+    }
+  });
 }
 
 // master
