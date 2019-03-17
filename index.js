@@ -75,7 +75,7 @@ function loop(){
 
   // Fetch data from python app below is test case
   //let data = { "Scenario": "This is a test", "Options": { "a": "apple", "b": "banana", "c": "cherry" } }
-	let data = read();
+	let data = read('http://127.0.0.1:5000/options');
 
   var label = 0;
   var key = Object.keys(data.Options)[label];
@@ -245,9 +245,9 @@ function typeWriter() {
   }
 }
 
-function read() {
+function read(pyURL) {
 	$.ajax({
-            url: 'http://127.0.0.1:5000/options ',
+            url: pyURL,
             data: $('form').serialize(),
             type: 'POST',
             success: function(response) {
