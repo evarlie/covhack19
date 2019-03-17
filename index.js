@@ -161,7 +161,25 @@ async function loop(data) {
       }, 500)
 
       document.getElementById("submit").addEventListener("click", () => {
-        submit();
+        let img = webcam.capture();
+        controllerDataset.predict(img).then(function (result) {
+          let key = Object.keys(data.Options)[result];
+          var i = 0;
+          var speed = 50;
+          var txt = data[key]
+
+          document.getElementById("scenario").innerHTML = "";
+
+          function typeWriter() {
+            if (i < txt.length) {
+              document.getElementById("scenario").innerHTML += txt.charAt(i);
+              i++;
+              setTimeout(typeWriter, speed);
+            }
+          }
+          typeWriter();
+        });
+
       })
     }
   })
